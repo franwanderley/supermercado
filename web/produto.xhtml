@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+              xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition template="_template.xhtml">
+		
+		<ui:define name="titulo">
+				Novo Produto
+		</ui:define>
+
+		<ui:define name="conteudo">
+			<h:form id="produto">
+                            <p:fieldset legend="Dados dos produtos">
+					<h:panelGrid columns="2">
+
+						<p:outputLabel value="Nome:" for="nome" />
+						<p:inputText id="nome" value="#{produtoBean.produto.nome}"
+                                                             required="true" requiredMessage="Digite o nome do produto" size="10" >
+							<f:attribute name="type" value="nome" />
+                                                        <f:validateLength minimum="5" />
+							<f:ajax event="blur" render="messageNome" />
+						</p:inputText>
+                                                
+                                                <p:outputLabel value="Marca: " for="marca" />
+                                                <p:inputText id="marca" value="#{produtoBean.produto.marca}"
+                                                             required="true" requiredMessage="Digite o preço do produto" size="10" >
+                                                        <f:validateLength maximum="25"/>
+                                                        <f:attribute name="type" value="marca" />
+                                                        <f:ajax event="blur" render="messageMarca" />
+						</p:inputText>
+						
+                                                <p:outputLabel value="Preço: " for="preco" />
+                                                <p:inputText id="preco" value="#{produtoBean.produto.preco}"
+                                                             required="true" requiredMessage="Digite o preço do produto" 
+                                                             size="10">
+							<f:attribute name="type" value="preco" />
+                                                        <f:ajax event="blur" render="messagePreco" />
+						</p:inputText>
+
+						<p:commandButton value="Gravar" action="#{produtoBean.gravar}" process="@form" update="@form :formTabelaProdutors" />
+
+					</h:panelGrid>
+				</p:fieldset>
+			</h:form>
+						<h:form id="formTabelaProdutors">
+
+                                                    <p:dataTable var="produto" value="#{produtoBean.produtos}" widgetVar="ProdutoTable"
+                 emptyMessage="Sem produtos"  id="tabelaProdutos">
+                                    
+                                                    <p:column filterBy="#{produto.nome}" headerText="nome" footerText="contains" filterMatchMode="contains">
+                                                        <h:outputText value="#{produto.nome}" />
+                                                    </p:column>
+                                                    <p:column filterBy="#{produto.preco}" headerText="Preço" footerText="contains" filterMatchMode="contains">
+                                                        <h:outputText value="#{produto.preco}" />
+                                                    </p:column>
+                                                        <p:column filterBy="#{produto.marca}" headerText="Marca" footerText="contains" filterMatchMode="contains">
+                                                            <h:outputText value="#{produto.marca}" />
+                                                    </p:column>
+                                                    <p:column>
+                                                        <f:facet name="header">Alterar</f:facet>
+                                                        <h:commandLink value="altera" action="#{produtoBean.carregar(produto)}"/>
+                                                    </p:column>
+                                                    <p:column>
+                                                        <f:facet name="header">Remover</f:facet>
+                                                        <h:commandLink value="remove" action="#{produtoBean.remover(produto)}"/>
+                                                    </p:column>
+                                                </p:dataTable>
+			</h:form>
+		</ui:define>
+
+	</ui:composition>
+
+</html>

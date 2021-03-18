@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+        xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition template="_template.xhtml">
+
+		<ui:define name="titulo">
+				<p:outputPanel>Nova Venda</p:outputPanel>
+		</ui:define>
+
+		<ui:define name="conteudo">
+			<h:form>
+
+
+				<p:fieldset legend="Dados do Venda">
+					<p:panelGrid columns="2">
+
+						<p:outputLabel value="Vendedor:" for="vendedor" />
+                                                <p:selectOneMenu value="#{vendaBean.venda.vendedor}" id="vendedor" required="true" requiredMessage="Escolha um vendedor">
+                                                    <f:selectItem itemLabel="- Selecione Vendedor(a) -" itemValue="#{null}"/>
+                                                    <f:selectItems value="#{vendaBean.vendedores}"/>
+						</p:selectOneMenu>
+                                                
+                                                <p:outputLabel value="Cliente:" for="cliente" />
+                                                <p:selectOneMenu value="#{vendaBean.venda.cliente}" id="cliente" required="true" requiredMessage="Escolha um cliente">
+                                                    <f:selectItem itemLabel="- Selecione Cliente -" itemValue="#{null}"/>
+                                                    <f:selectItems value="#{vendaBean.clientes}"/>
+						</p:selectOneMenu>
+                                                
+                                                <p:outputLabel value="Data da venda:" for="data" />
+                                                <p:calendar id="data" value="#{vendaBean.venda.datav}" timeZone="America/Sao_Paulo" pattern="dd/MM/yyyy" mask="true" />
+					</p:panelGrid>
+
+				</p:fieldset>
+	
+				<p:fieldset legend="Dados dos Produtos">
+
+					<p:panelGrid columns="4">
+						<p:outputLabel value="Selecione Produto:" for="produto" />
+                                                <p:selectOneMenu value="#{vendaBean.produtoId}" id="produto">
+                                                    <f:selectItems value="#{vendaBean.produtos}" var="produto" itemLabel="#{produto.nome}" itemValue="#{produto.id}" />
+						</p:selectOneMenu>
+
+                                                <p:commandButton value="Gravar Produto" action="#{vendaBean.gravarProduto}" 
+								process="@this produto" update="tabelaProdutos">
+						</p:commandButton>
+                                                <p:commandLink value="Limpar produtos" action="#{vendaBean.venda.limpaProdutos()}" process="@this produto" update="tabelaProdutos"/>
+		
+					</p:panelGrid>
+
+	
+			
+                                    <p:dataTable value="#{vendaBean.produtosDaVenda}" var="produto" id="tabelaProdutos">
+                                                <p:column filterBy="#{produto.nome}">
+							<h:outputText value="#{produto.nome}" />
+                                                </p:column>
+                                                <p:column>
+							<h:outputText value="#{produto.preco}" />
+                                                </p:column>
+						<p:column>
+                                                    <p:commandLink value="X" action="#{vendaBean.removerProdutoDaVenda(produto)}" update="tabelaProdutos" process="@this"/>
+						</p:column>
+					</p:dataTable>
+				</p:fieldset>
+                                <br />
+				<p:fieldset style="text-align:center;">
+                                    <p:commandButton value="Gravar Venda" action="#{vendaBean.gravar}" process="@form" 
+							update="@form :formTabelaVendas:tabelaVendas"  />
+                            </p:fieldset>
+			</h:form>
+	
+			<h:form id="formTabelaVendas">
+                            <p:dataTable value="#{vendaBean.vendas}" var="venda" id="tabelaVendas">
+					<p:column>
+						<f:facet name="header">Total</f:facet>
+                                                <h:outputText value="#{venda.total}" />
+					</p:column>
+
+					<p:column>
+						<f:facet name="header">Data</f:facet>
+                                                <h:outputText value="#{venda.datav}">
+							<f:convertDateTime pattern="dd/MM/yyyy"
+								timeZone="America/Sao_Paulo" />
+						</h:outputText>
+					</p:column>
+                                    	<p:column>
+						<f:facet name="header">Vendedor</f:facet>
+                                                <h:outputText value="#{venda.vendedor.nome}">
+						</h:outputText>
+					</p:column>
+                                    	<p:column>
+						<f:facet name="header">Cliente</f:facet>
+                                                <h:outputText value="#{venda.cliente.nome}">
+						</h:outputText>
+					</p:column>
+
+                                    <p:column>
+						<f:facet name="header">Alterar</f:facet>
+                                                <h:commandLink value="Alterar" action="#{vendaBean.carregar(venda)}"/>
+					</p:column>
+					<p:column>
+						<f:facet name="header">Remover</f:facet>
+						<h:commandLink value="Remover" action="#{vendaBean.remover(venda)}"/>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+
+</html>

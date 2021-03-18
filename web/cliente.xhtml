@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+              xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition template="_template.xhtml">
+		
+		<ui:define name="titulo">
+				Novo Cliente
+		</ui:define>
+
+                <f:metadata>
+                    <f:viewParam name="clienteId" value="#{clienteBean.cliente.id}" />
+                    <f:viewAction action="#{clienteBean.buscarCliente}" if="#{param.clienteId != null}" />
+		</f:metadata>
+		<ui:define name="conteudo">
+			<h:form id="cliente">
+                            <p:fieldset legend="Dados do Cliente">
+					<h:panelGrid columns="2">
+
+						<p:outputLabel value="Nome:" for="nome" />
+                                                <p:inputText id="nome" value="#{clienteBean.cliente.nome}"
+                                                             required="true" requiredMessage="Digite o nome">
+							<f:attribute name="type" value="nome" />
+                                                        <f:validateLength minimum="5" />
+							<f:ajax event="blur" render="messageNome" />
+						</p:inputText>
+						<p:outputLabel value="Cpf:" for="cpf" />
+                                                <p:inputText id="cpf" value="#{clienteBean.cliente.cpf}"
+                                                             required="true" requiredMessage="Cpf obrigatorio" validatorMessage="cpf menor ou maior que 11 caractere">
+                                                        <f:attribute name="type" value="cpf" />
+                                                        <f:validateLength minimum="11" maximum="11" />
+							<f:ajax event="blur" render="messageCpf" />
+						</p:inputText>
+                                                <p:outputLabel value="Total de compras:" for="totaldecompras" />
+                                                <p:inputText id="totaldecompras" value="#{clienteBean.cliente.totaldecompras}"
+                                                             required="true" requiredMessage="total de compras obrigatorio">
+							<f:attribute name="type" value="totaldecompras" />
+                                                        <f:ajax event="blur" render="messageTotaldecompras" />
+						</p:inputText>
+						
+						
+
+                                                <p:commandButton value="Gravar" action="#{clienteBean.gravar()}" process="@form" update="@form :formTabelaClienters"/>
+                                                
+					</h:panelGrid>
+				</p:fieldset>
+			</h:form>
+			<h:form id="formTabelaClienters">
+
+                            <p:dataTable var="cliente" value="#{clienteBean.clientes}" widgetVar="clienteTable"
+                 emptyMessage="Ainda não existe crientes"  id="TabelaClienters">
+                                    
+                                        <p:column filterBy="#{cliente.nome}" headerText="nome" footerText="contains" filterMatchMode="contains">
+                                            <h:outputText value="#{cliente.nome}" />
+                                        </p:column>
+                                        <p:column filterBy="#{cliente.cpf}" headerText="cpf" footerText="contains" filterMatchMode="contains">
+                                            <h:outputText value="#{cliente.cpf}" />
+                                        </p:column>
+                                <p:column filterBy="#{cliente.totaldecompras}" headerText="total de compras" footerText="contains" filterMatchMode="contains">
+                                            <h:outputText value="#{cliente.totaldecompras}" />
+                                        </p:column>
+					<p:column>
+						<f:facet name="header">Alterar</f:facet>
+                                                <h:commandLink value="altera" action="#{clienteBean.carregar(cliente)}"/>
+					</p:column>
+					<p:column>
+						<f:facet name="header">Remover</f:facet>
+                                                <h:commandLink value="remove" action="#{clienteBean.remover(cliente)}"/>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</ui:define>
+
+	</ui:composition>
+
+</html>

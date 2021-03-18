@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+              xmlns:p="http://primefaces.org/ui">
+
+	<ui:composition template="_template.xhtml">
+		
+		<ui:define name="titulo">
+				Novo(a) Vendedor(a)
+		</ui:define>
+
+                <f:metadata>
+                    <f:viewParam name="vendedorId" value="#{vendedorBean.vendedor.id}" />
+                    <f:viewAction action="#{vendedorBean.buscarVendedor}" if="#{param.vendedorId != null}" />
+		</f:metadata>
+		<ui:define name="conteudo">
+			<h:form id="vendedor">
+                            <p:fieldset legend="Dados da Vendedor(a)">
+					<h:panelGrid columns="2">
+
+						<p:outputLabel value="Nome:" for="nome" />
+                                                <p:inputText id="nome" value="#{vendedorBean.vendedor.nome}" required="true" 
+                                                        requiredMessage="nome obrigatorio" validatorMessage="nome completo">
+							<f:attribute name="type" value="nome" />
+                                                        <f:validateLength minimum="10"/>
+							<f:ajax event="blur" render="messageNome" />
+						</p:inputText>
+						
+
+                                                <p:outputLabel value="Cpf:" for="cpf" />
+                                                <p:inputText id="cpf" value="#{vendedorBean.vendedor.cpf}" required="true"
+                                                            requiredMessage="cpf obrigatorio" validatorMessage="cpf menor ou maior que 11 caractere">
+							<f:attribute name="type" value="cpf" />
+                                                        <f:validateLength minimum="11" maximum="11"/>
+							<f:ajax event="blur" render="messageCpf" />
+						</p:inputText>
+                                                <p:outputLabel value="Salario:" for="salario" />
+                                                <p:inputText id="salario" value="#{vendedorBean.vendedor.salario}" required="true"
+                                                            requiredMessage="salario obrigatorio">
+							<f:attribute name="type" value="salario" />
+							<f:ajax event="blur" render="messageSalario" />
+						</p:inputText>
+
+                                                <p:commandButton value="Gravar" action="#{vendedorBean.gravar}" process="@form" update="@form :formTabelaVendedors" />
+
+					</h:panelGrid>
+				</p:fieldset>
+			</h:form>
+						<h:form id="formTabelaVendedors">
+
+                             <p:dataTable var="vendedor" value="#{vendedorBean.vendedores}" widgetVar="vendedorTable"
+                 emptyMessage="Sem vendedores"  id="tabelaVendedors">
+                                    
+                                        <p:column filterBy="#{vendedor.nome}" headerText="nome" footerText="contains" filterMatchMode="contains">
+                                            <h:outputText value="#{vendedor.nome}" />
+                                        </p:column>
+                                        <p:column filterBy="#{vendedor.cpf}" headerText="Cpf" footerText="contains" filterMatchMode="contains">
+                                            <h:outputText value="#{vendedor.cpf}" />
+                                        </p:column>
+                                        <p:column filterBy="#{vendedor.salario}" headerText="Salario" footerText="contains" filterMatchMode="contains">
+                                            <h:outputText value="#{vendedor.salario}" />
+                                        </p:column>
+					<p:column>
+						<f:facet name="header">Alterar</f:facet>
+                                                <h:commandLink value="altera" action="#{vendedorBean.carregar(vendedor)}"/>
+					</p:column>
+					<p:column>
+						<f:facet name="header">Remover</f:facet>
+						<h:commandLink value="remove" action="#{vendedorBean.remover(vendedor)}"/>
+					</p:column>
+				</p:dataTable>
+			</h:form>
+		</ui:define>
+
+	</ui:composition>
+
+</html>
